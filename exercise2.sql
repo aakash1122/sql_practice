@@ -64,7 +64,6 @@ SELECT Department, COUNT(*)
   FROM Employees
   GROUP BY Department;
 
-
 --@BLOCK Select all the data of employees, including each employee's department's data.
 select * from employees, departments where employees.department = departments.code;
 
@@ -75,6 +74,37 @@ LEFT join departments
 on employees.department = departments.code
 
 
---@BLOCK
---@BLOCK
---@BLOCK
+--@BLOCK Select the name and last name of employees working for departments with a budget greater than $60,000.
+SELECT employees.name, employees.lastname 
+from employees , departments 
+where departments.code = employees.department and departments.budget > 60000
+
+--@block  Select the departments with a budget larger than the average budget of all the departments.
+select name from departments where budget > (
+  select avg(budget) from departments
+)
+
+--@BLOCK  Select the names of departments with more than two employees.
+select departments.name, count(employees.name) AS counter
+from departments, employees
+group by department.code
+where  counter >= 2
+
+--@BLOCK Select the name and last name of employees working for departments with second lowest budget.
+select name, lastname from employees 
+where department = (
+select code from departments 
+order by budget offset 1 limit 1
+) 
+--@BLOCK  Add a new department called "Quality Assurance", with a budget of $40,000 and departmental code 11. Add an employee called "Mary Moore" in that department, with SSN 847-21-9811.
+insert into departments (code,name,budget) 
+values (11,'Quality Assurance',40000)
+
+insert into employees (ssn,name,lastname,department)
+values (847219811,'Mary','Moore',11)
+
+--@BLOCK  Reduce the budget of all departments by 10%.
+select budget * 0.9 from departments
+
+--@BLOCKReassign all employees from the Research department (code 77) to the IT department (code 14).
+update employees set department = 14 where department = 77
